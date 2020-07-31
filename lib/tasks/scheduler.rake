@@ -16,7 +16,7 @@ task :update_feed => :environment do
   url = "https://www.drk7.jp/weather/xml/27.xml"
   # xmlデータをパース(利用しやすいように整形)
   xml = open( url ).read.toutf8
-  doc = REXML::document.new(xml)
+  doc = REXML::Document.new(xml)
   # パスの共通部分を変数化(area[4]は「東京地方」を指定している)
   xpath = 'weatherforecast/pref/area[1]/info/rainfallchance/'
   # 6~12時の降水確率(以下同等)
@@ -25,7 +25,7 @@ task :update_feed => :environment do
   per18to24 = doc.elements[xpath + 'period[4]'].text
   # メッセージを発信する降水確率の下限値の設定
   min_per = 20
-  if per06to12.to_i >- min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
+  if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
     word1 =
       ["いい朝だね",
        "今日もよく眠れた?",
@@ -40,7 +40,7 @@ task :update_feed => :environment do
        "楽しいことがありますように"].sample
     # 降水確率によってメッセージを変更する閾値の設定
     mid_per = 50
-    if per06to12.to_i >= mid_per || per12to18.to_i >= mid_per || per18to24.to_i mid_per
+    if per06to12.to_i >= mid_per || per12to18.to_i >= mid_per || per18to24.to_i >= mid_per
       word3 = "今日は雨が降りそうだから傘を忘れないでね"
     else
       word3 = "今日は雨が降るかもしれないから折り畳み傘があると安心だよ"
